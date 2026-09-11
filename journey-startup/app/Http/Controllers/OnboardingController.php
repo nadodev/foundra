@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateOrganizationTypeRequest;
 use App\Models\Organization;
 use App\Models\Startup;
 use App\Models\User;
+use App\Services\GeminiService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
@@ -58,13 +59,22 @@ class OnboardingController extends Controller
         ]);
     }
 
-    public function storeStartup(StoreStartupRequest $request): RedirectResponse
+    public function storeStartup(StoreStartupRequest $request, GeminiService $gemini): RedirectResponse
     {
         $organization = $this->currentOrganization($request->user());
         $startup = $organization->startups()->latest()->first() ?? new Startup(['organization_id' => $organization->id]);
 
         $startup->fill($request->validated());
         $startup->save();
+
+        $analysis = $gemini->analyzeStartup($startup, $organization);
+
+        if ($analysis !== null) {
+            $startup->update([
+                'ai_analysis' => $analysis,
+                'ai_analyzed_at' => now(),
+            ]);
+        }
 
         return redirect()->route('startup.analysis');
     }

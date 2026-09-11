@@ -2,13 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Requests\UpdateStartupSettingsRequest;
+use App\Models\Organization;
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class EntrepreneurController extends Controller
 {
     public function overview(): View
     {
-        return view('entrepreneur.overview');
+        $organization = $this->currentOrganization(request()->user());
+
+        return view('entrepreneur.overview', [
+            'organization' => $organization,
+            'startup' => $organization->startups()->latest()->first(),
+        ]);
     }
 
     public function journey(): View
@@ -118,6 +128,30 @@ class EntrepreneurController extends Controller
 
     public function settings(): View
     {
-        return view('entrepreneur.settings');
+        $organization = $this->currentOrganization(request()->user());
+
+        return view('entrepreneur.settings', [
+            'startup' => $organization->startups()->latest()->first(),
+        ]);
+    }
+
+    public function updateProfile(UpdateProfileRequest $request): RedirectResponse
+    {
+        $request->user()->update($request->validated());
+
+        return back()->with('status', 'Perfil atualizado com sucesso.');
+    }
+
+    public function updateStartup(UpdateStartupSettingsRequest $request): RedirectResponse
+    {
+        $startup = $this->currentOrganization($request->user())->startups()->latest()->firstOrFail();
+        $startup->update($request->validated());
+
+        return back()->with('status', 'Dados da startup atualizados com sucesso.');
+    }
+
+    private function currentOrganization(User $user): Organization
+    {
+        return $user->organizations()->wherePivot('role', 'owner')->firstOrFail();
     }
 }

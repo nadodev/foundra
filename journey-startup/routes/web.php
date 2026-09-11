@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthenticatedSessionController;
 use App\Http\Controllers\EntrepreneurController;
+use App\Http\Controllers\GeminiController;
 use App\Http\Controllers\InvestorController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\OnboardingController;
@@ -23,14 +24,17 @@ Route::controller(PublicController::class)->group(function () {
     Route::get('/all-pages.html', 'allPages');
 });
 
+// Rotas de Autenticação (GET livres — POST protegidos por throttle)
+Route::get('/login', [PublicController::class, 'login'])->name('login');
+Route::get('/register', [PublicController::class, 'register'])->name('register');
+
 Route::middleware('guest')->group(function () {
-    Route::get('/login', [PublicController::class, 'login'])->name('login');
     Route::post('/login', [AuthenticatedSessionController::class, 'store'])->middleware('throttle:login');
-    Route::get('/register', [PublicController::class, 'register'])->name('register');
     Route::post('/register', [AuthenticatedSessionController::class, 'register'])->middleware('throttle:registration');
 });
 
 Route::middleware('auth')->group(function () {
+    Route::post('/ai/generate-field', [GeminiController::class, 'generateField'])->name('ai.field.generate');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     Route::get('/role-select', [OnboardingController::class, 'roleSelect'])->name('role.select');
     Route::put('/role-select', [OnboardingController::class, 'updateOrganizationType'])->name('role.select.update');
@@ -69,6 +73,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/notifications', 'notifications')->name('entrepreneur.notifications');
         Route::get('/journey-ai', 'journeyAi')->name('entrepreneur.journey-ai');
         Route::get('/settings', 'settings')->name('entrepreneur.settings');
+        Route::put('/settings/profile', 'updateProfile')->name('entrepreneur.settings.profile.update');
+        Route::put('/settings/startup', 'updateStartup')->name('entrepreneur.settings.startup.update');
     });
 
     // Área do Programa de Inovação / Aceleração

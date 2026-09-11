@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class PublicController extends Controller
@@ -11,13 +13,21 @@ class PublicController extends Controller
         return view('public.index');
     }
 
-    public function login(): View
+    public function login(Request $request): View|RedirectResponse
     {
+        if ($request->user() !== null) {
+            return redirect()->route('role.select');
+        }
+
         return view('public.login');
     }
 
-    public function register(): View
+    public function register(Request $request): View|RedirectResponse
     {
+        if ($request->user() !== null) {
+            return redirect()->route('role.select');
+        }
+
         return view('public.register');
     }
 

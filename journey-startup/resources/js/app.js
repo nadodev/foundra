@@ -31,6 +31,116 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  const geminiDialog = document.querySelector('#gemini-prompt-dialog');
+  const geminiPromptForm = document.querySelector('[data-gemini-prompt-form]');
+  const geminiPromptInput = document.querySelector('#gemini-prompt-input');
+  const geminiPromptError = document.querySelector('[data-gemini-prompt-error]');
+  let pendingGeminiButton = null;
+
+  const generateWithGemini = async (button, instruction) => {
+    const form = button.closest('form');
+    const field = button.dataset.field;
+    const target = form?.querySelector(`[name="${field}"]`);
+    if (!form || !field || !target) return;
+
+    const originalLabel = button.dataset.geminiLabel ?? button.textContent;
+    button.dataset.geminiLabel = originalLabel;
+    const feedback = button.closest('.field')?.querySelector('.wizard-ai-message') ?? document.createElement('small');
+    feedback.className = 'wizard-ai-message';
+    button.closest('.field')?.append(feedback);
+    feedback.textContent = 'A Foundra AI está preparando uma sugestão...';
+    feedback.dataset.state = 'loading';
+    button.disabled = true;
+    button.textContent = 'Gerando...';
+    form.dataset.aiGenerating = 'true';
+    let cooldownSeconds = 0;
+
+    try {
+      const values = Object.fromEntries(new FormData(form).entries());
+      delete values._method;
+      values.field = field;
+      values.instruction = instruction;
+      const response = await fetch(button.dataset.geminiUrl, {
+        method: 'POST', credentials: 'same-origin',
+        headers: { Accept: 'application/json', 'Content-Type': 'application/json', 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content ?? '' },
+        body: JSON.stringify(values),
+      });
+      const payload = await response.json();
+      if (!response.ok || !payload.text) {
+        const error = new Error(payload.message || 'Não foi possível gerar uma sugestão.');
+        error.retryAfter = payload.retry_after || response.headers.get('Retry-After');
+        throw error;
+      }
+
+      target.value = payload.text;
+      target.dispatchEvent(new Event('input', { bubbles: true }));
+      target.focus();
+      feedback.textContent = 'Sugestão gerada. Revise e ajuste com a sua realidade.';
+      feedback.dataset.state = 'success';
+      cooldownSeconds = Number(payload.cooldown_seconds) || 300;
+    } catch (error) {
+      feedback.textContent = `${error.message || 'Não foi possível gerar uma sugestão agora.'} Você poderá tentar novamente em instantes.`;
+      feedback.dataset.state = 'error';
+      cooldownSeconds = Number(error.retryAfter) || 20;
+    } finally {
+      delete form.dataset.aiGenerating;
+
+      if (!cooldownSeconds) {
+        button.disabled = false;
+        button.textContent = originalLabel;
+        return;
+      }
+
+      let remaining = cooldownSeconds;
+      const formatRemaining = seconds => `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
+      button.disabled = true;
+      button.textContent = `Disponível em ${formatRemaining(remaining)}`;
+      const countdown = window.setInterval(() => {
+        remaining -= 1;
+        button.textContent = remaining > 0 ? `Disponível em ${formatRemaining(remaining)}` : 'Tentar novamente';
+
+        if (remaining <= 0) {
+          window.clearInterval(countdown);
+          button.disabled = false;
+        }
+      }, 1000);
+    }
+  };
+
+  document.querySelectorAll('[data-gemini-generate]').forEach(button => {
+    button.addEventListener('click', event => {
+      event.preventDefault();
+      event.stopPropagation();
+      pendingGeminiButton = button;
+      geminiPromptInput.value = '';
+      geminiPromptError.hidden = true;
+      geminiDialog.showModal();
+      geminiPromptInput.focus();
+    });
+  });
+
+  geminiPromptForm?.addEventListener('submit', event => {
+    event.preventDefault();
+    const instruction = geminiPromptInput.value.trim();
+    if (!instruction) {
+      geminiPromptError.hidden = false;
+      geminiPromptInput.focus();
+      return;
+    }
+    const button = pendingGeminiButton;
+    geminiDialog.close();
+    pendingGeminiButton = null;
+    if (button) generateWithGemini(button, instruction);
+  });
+
+  document.querySelectorAll('[data-gemini-prompt-cancel]').forEach(button => button.addEventListener('click', () => geminiDialog.close()));
+
+  document.querySelectorAll('form').forEach(form => {
+    form.addEventListener('submit', event => {
+      if (form.dataset.aiGenerating === 'true') event.preventDefault();
+    });
+  });
+
   document.querySelectorAll('[data-foundra-tabs]').forEach(tabs => {
     const tabButtons = [...tabs.querySelectorAll('[data-foundra-tab]')];
     const panels = [...tabs.querySelectorAll('[data-foundra-panel-tab]')];
@@ -55,7 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    panels.forEach(panel => panel.hidden = panel.id !== tabButtons[0].dataset.foundraTab);
+    const selectedTab = tabButtons.find(button => button.getAttribute('aria-selected') === 'true') ?? tabButtons[0];
+    selectTab(selectedTab);
   });
 
   document.querySelectorAll('[data-foundra-story]').forEach(story => {

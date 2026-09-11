@@ -1,13 +1,24 @@
 @extends('layouts.base')
 
 @section('body')
-<div class="shell">
+@php
+    $currentUser = auth()->user();
+    $nameParts = preg_split('/\s+/', trim($currentUser->name));
+    $userInitials = implode('', array_map(
+        fn (string $part) => mb_strtoupper(mb_substr($part, 0, 1)),
+        array_slice($nameParts, 0, 2),
+    ));
+    $activeOrganization = $currentUser->organizations()->wherePivot('role', 'owner')->with('startups')->first();
+    $activeStartup = $activeOrganization?->startups->sortByDesc('created_at')->first();
+    $stageLabels = ['idea' => 'Ideia', 'program' => 'Programa', 'post_program' => 'Pós-programa', 'mvp' => 'MVP'];
+@endphp
+<div class="shell entrepreneur-shell">
     {{-- ====================================================
          SIDEBAR — Área do Empreendedor
     ==================================================== --}}
     <aside class="sidebar" id="sidebar">
         {{-- Logo Foundra --}}
-        <a class="brand" href="{{ route('entrepreneur.overview') }}" style="flex-direction:column;align-items:flex-start;gap:4px;padding-bottom:14px;">
+        <a class="brand entrepreneur-brand" href="{{ route('entrepreneur.overview') }}" style="flex-direction:column;align-items:flex-start;gap:4px;padding-bottom:14px;">
             <img src="/logo.png" alt="Foundra" style="width:108px;height:auto;">
             <span style="font-size:9.5px;font-weight:600;color:var(--text-3);letter-spacing:0.04em;padding-left:2px;">Área do Empreendedor</span>
         </a>
@@ -15,8 +26,8 @@
         {{-- Workspace ativo --}}
         <div class="workspace">
             <small>Startup ativa</small>
-            <strong>FinAI</strong>
-            <div style="margin-top:5px"><span class="badge primary">Validação</span></div>
+            <strong>{{ $activeStartup?->name ?? 'Ainda sem startup' }}</strong>
+            <div style="margin-top:5px"><span class="badge {{ $activeStartup ? 'primary' : 'warn' }}">{{ $activeStartup ? ($stageLabels[$activeOrganization?->onboarding_stage] ?? 'Em configuração') : 'Conclua o cadastro' }}</span></div>
         </div>
 
         {{-- Navegação principal --}}
@@ -119,10 +130,10 @@
                 </a>
             </nav>
             <div class="user-card">
-                <div class="avatar">LG</div>
+                <div class="avatar">{{ $userInitials }}</div>
                 <div>
-                    <strong>Leonardo</strong>
-                    <small>Empreendedor · Turma 2027</small>
+                    <strong>{{ $currentUser->name }}</strong>
+                    <small>Empreendedor</small>
                 </div>
             </div>
         </div>
@@ -132,19 +143,36 @@
          TOPBAR
     ==================================================== --}}
     <header class="topbar">
-        <div class="search" role="search">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>Buscar hipóteses, evidências, anotações...</span>
+        <div class="topbar-context">
+            <span>Workspace</span>
+            <strong>{{ $activeStartup?->name ?? 'Sua jornada' }}</strong>
         </div>
         <div class="top-actions">
-            <a href="{{ route('entrepreneur.readiness') }}" class="badge success" style="cursor:pointer">
-                Maturidade: 62%
+            <a class="topbar-new-evidence" href="{{ route('entrepreneur.interviews.new') }}">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+                <span>Nova evidência</span>
             </a>
-            <button class="btn hide-sm" data-demo-toast="Convite simulado.">Convidar membro</button>
-            <a class="btn primary" href="{{ route('entrepreneur.journey-ai') }}">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-                Perguntar à IA
-            </a>
+            <details class="topbar-account">
+                <summary aria-label="Abrir menu da conta">
+                    <span class="topbar-account-avatar">{{ $userInitials }}</span>
+                    <span class="topbar-account-label">
+                        <strong>{{ $currentUser->name }}</strong>
+                        <small>Minha conta</small>
+                    </span>
+                    <svg class="topbar-account-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
+                </summary>
+                <div class="topbar-account-menu">
+                    <div class="topbar-account-identification">
+                        <span class="topbar-account-avatar">{{ $userInitials }}</span>
+                        <span><strong>{{ $currentUser->name }}</strong><small>{{ $currentUser->email }}</small></span>
+                    </div>
+                    <a href="{{ route('entrepreneur.settings') }}">Meu perfil</a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit">Sair da conta</button>
+                    </form>
+                </div>
+            </details>
         </div>
     </header>
 

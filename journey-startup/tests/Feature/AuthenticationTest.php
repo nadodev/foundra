@@ -40,6 +40,15 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_authenticated_user_is_sent_to_the_onboarding_wizard_from_registration_page(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->get(route('register'));
+
+        $response->assertRedirect(route('role.select'));
+    }
+
     public function test_user_can_sign_in_with_valid_credentials(): void
     {
         $user = User::factory()->create([

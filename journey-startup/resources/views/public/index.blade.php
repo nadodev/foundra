@@ -8,7 +8,7 @@
         <nav class="foundra-nav" data-foundra-header aria-label="Navegação principal">
             <a href="{{ route('home') }}" class="foundra-logo" aria-label="Foundra, início"><img src="/logo.png" alt="Foundra"></a>
             <div class="foundra-nav-links"><a href="#metodo">Método</a><a href="#sinais">Sinais</a><a href="#para-quem">Para quem</a></div>
-            <div class="foundra-nav-actions"><a href="{{ route('login') }}">Entrar</a><a class="btn btn-primary" href="{{ route('register') }}">Criar conta grátis</a></div>
+            <div class="foundra-nav-actions">@guest<a href="{{ route('login') }}">Entrar</a><a class="btn btn-primary" href="{{ route('register') }}">Criar conta grátis</a>@else<a href="{{ route('role.select') }}">Meu workspace</a><a class="btn btn-primary" href="{{ route('role.select') }}">Continuar jornada</a>@endguest</div>
         </nav>
 
         <div class="foundra-intro-grid">

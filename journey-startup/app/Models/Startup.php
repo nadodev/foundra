@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['organization_id', 'name', 'description', 'problem', 'target_customer', 'solution'])]
+#[Fillable(['organization_id', 'name', 'description', 'problem', 'target_customer', 'solution', 'sector', 'is_public', 'ai_analysis', 'ai_analyzed_at'])]
 class Startup extends Model
 {
     /** @use HasFactory<StartupFactory> */
@@ -20,5 +20,13 @@ class Startup extends Model
     public function organization(): BelongsTo
     {
         return $this->belongsTo(Organization::class);
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'is_public' => 'boolean',
+            'ai_analyzed_at' => 'datetime',
+        ];
     }
 }
