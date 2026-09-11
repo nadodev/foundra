@@ -1,0 +1,16 @@
+@extends('layouts.entrepreneur')
+
+@section('title', 'Validação · Startup Journey')
+
+@section('content')
+<div class="page-head"><div><div class="eyebrow">Hipótese → Teste → Evidência → Decisão</div><h1>Quadro de Validação</h1><p>Transforme suposições em decisões apoiadas por evidências.</p></div><div class="actions"><button class="btn">＋ Nova hipótese</button><button class="btn primary">＋ Novo experimento</button></div></div>
+<div class="card tint" style="margin-bottom:16px"><div class="grid four"><div><div class="metric-label">Hipóteses</div><div class="metric-value">4</div></div><div><div class="metric-label">Testing</div><div class="metric-value">2</div></div><div><div class="metric-label">Validado</div><div class="metric-value">6</div></div><div><div class="metric-label">Rejeitado</div><div class="metric-value">2</div></div></div></div>
+<div class="board">
+<div class="column"><h3>Hipóteses <span>4</span></h3><div class="ticket"><span class="badge danger">Crítica</span><strong style="margin-top:8px">Clientes pagariam R$600/mês.</strong><p>Maior risco atual.</p><div class="row"><span class="badge">0 evidências</span></div></div><div class="ticket"><span class="badge">Médio</span><strong style="margin-top:8px">Lojistas preferem automação a planilhas.</strong><p>Precisa de comparação do processo atual.</p></div></div>
+<div class="column"><h3>Testing <span>2</span></h3><div class="ticket"><span class="badge primary">Em teste</span><strong style="margin-top:8px">Gestores gastam mais de 5h/semana conciliando.</strong><p>Experimento: 10 entrevistas.</p><div class="row"><span class="badge">8/10 entrevistas</span></div></div></div>
+<div class="column"><h3>Evidências Encontradas <span>3</span></h3><div class="ticket"><span class="badge info">Evidência</span><strong style="margin-top:8px">Planilhas ainda são a principal alternativa.</strong><p>6 entrevistas + 14 fontes públicas.</p><div class="row"><span class="badge success">Confiança 72%</span></div></div></div>
+<div class="column"><h3>Validado <span>6</span></h3><div class="ticket"><span class="badge success">Validado</span><strong style="margin-top:8px">O problema ocorre mensalmente.</strong><p>8/10 entrevistados confirmaram recorrência.</p><div class="row"><span class="badge success">11 evidências</span></div></div></div>
+<div class="column"><h3>Rejeitado <span>2</span></h3><div class="ticket"><span class="badge danger">Rejeitado</span><strong style="margin-top:8px">A maior dor é gerar relatórios.</strong><p>Entrevistas indicaram que o problema principal é conciliação.</p></div></div>
+</div>
+<div class="card section"><div class="section-head"><div><div class="metric-label">Detalhes da hipótese</div><h2>Clientes pagariam R$600/mês.</h2></div><span class="badge danger">Hipótese crítica</span></div><div class="grid three"><div><h3>Por que isso importa</h3><p>Sem disposição a pagar, o modelo atual não se sustenta.</p></div><div><h3>Evidências favoráveis</h3><p>2 clientes disseram considerar pagar.</p></div><div><h3>Evidências contrárias</h3><p>3 clientes acharam o preço alto.</p></div></div><div class="actions" style="margin-top:16px"><a class="btn" href="{{ route('entrepreneur.evidence') }}">Adicionar evidências</a><button class="btn primary">Criar experimento</button></div></div>
+@endsection

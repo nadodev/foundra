@@ -1,0 +1,8 @@
+@extends('layouts.entrepreneur')
+
+@section('title', 'Jornada AI · Startup Journey')
+
+@section('content')
+<div class="page-head"><div><div class="eyebrow">Assistente com contexto</div><h1>Jornada AI</h1><p>A IA conhece o estágio, hipóteses, evidências e histórico da startup.</p></div><div class="actions"></div></div>
+<div class="split wide"><div><div class="card"><h2>Suggested questions</h2><div class="grid two"><button class="btn" style="justify-content:flex-start">What should I validate next?</button><button class="btn" style="justify-content:flex-start">Why isn't my startup MVP Pronto?</button><button class="btn" style="justify-content:flex-start">Analyze my latest entrevistas</button><button class="btn" style="justify-content:flex-start">Ajuda refine H3 Preço</button></div></div><div class="card section"><div class="item-main"><div class="avatar">AI</div><div><div class="item-title">Jornada AI</div><div class="item-meta">Based on current workspace context</div></div></div><div class="quote" style="font-style:normal;margin-top:14px">Seu maior risco continua sendo preço. Você já possui boa evidência de problema, mas ainda não tem compromisso concreto de compra. Eu testaria três faixas com os próximos 6 entrevistados e registraria reação + compromisso real.</div><div class="tag-row"><span class="badge">Uses H3 Preço</span><span class="badge">12 entrevistas</span><span class="badge">48 evidênciass</span></div></div></div><aside><div class="card tint"><h2>Como funciona</h2><p>A IA não substitui a metodologia. Ela ajuda a conectar informações já existentes, apontar lacunas e sugerir próximos experimentos.</p></div></aside></div>
+@endsection

@@ -1,0 +1,14 @@
+@extends('layouts.entrepreneur')
+
+@section('title', 'Business Model · Startup Journey')
+
+@section('content')
+<div class="page-head"><div><div class="eyebrow">Evidência-backed model</div><h1>Business Model</h1><p>Um Canvas vivo, conectado às evidências e aprendizados da startup.</p></div><div class="actions"><button class="btn">Salvar versão</button><button class="btn primary">Exportararar Canvas</button></div></div>
+<div class="tabs"><div class="tab active">Lean Canvas</div><div class="tab">Proposta de Valor</div><div class="tab">Receita &amp; Costs</div></div>
+<div class="canvas-grid"><div class="card canvas-card"><div class="section-head"><span class="badge success">88% confidence</span><span class="badge">1</span></div><h2>Problema</h2><p>Conciliação manual consome cerca de 38h/mês e pode esconder perdas.</p><div class="tag-row"><span class="badge success">18 favoráveis</span><span class="badge danger">1 contrárias</span></div><button class="btn" style="margin-top:14px">Ver evidências</button></div>
+<div class="card canvas-card"><div class="section-head"><span class="badge info">60% confidence</span><span class="badge">2</span></div><h2>Solução</h2><p>Automatizar leitura de extratos e destacar divergências.</p><div class="tag-row"><span class="badge">6 tests</span><span class="badge danger">3 divergent</span></div><button class="btn" style="margin-top:14px">Ver evidências</button></div>
+<div class="card canvas-card"><div class="section-head"><span class="badge info">65% confidence</span><span class="badge">3</span></div><h2>Proposta de Valor</h2><p>Encontrar perdas sem transformar a rotina financeira em um projeto de implantação.</p><div class="tag-row"><span class="badge">8 sinais</span></div></div>
+<div class="card canvas-card"><div class="section-head"><span class="badge warn">40% confidence</span><span class="badge">4</span></div><h2>Vantagem Difícil de Copiar</h2><p>Foco em varejo físico e experiência simples.</p><div class="tag-row"><span class="badge warn">Precisa de validação</span></div></div>
+<div class="card canvas-card"><div class="section-head"><span class="badge success">82% confidence</span><span class="badge">5</span></div><h2>Segmentooo de Clientes</h2><p>Redes varejistas com 3–25 lojas e operação financeira enxuta.</p><div class="tag-row"><span class="badge success">15 entrevistas</span></div></div></div>
+<div class="grid two section"><div class="card"><div class="section-head"><h2>Estrutura de Custos</h2><span class="badge">50% confidence</span></div><p>Infra, suporte, análise e eventual integração.</p></div><div class="card danger"><div class="section-head"><h2>Fontes de Receita</h2><span class="badge danger">24% confidence</span></div><p>Preço ainda é o principal gargalo do modelo.</p><div class="actions" style="margin-top:12px"><button class="btn danger">Criar experimento de preço</button></div></div></div>
+@endsection

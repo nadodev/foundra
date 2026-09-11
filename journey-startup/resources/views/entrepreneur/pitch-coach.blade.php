@@ -1,0 +1,10 @@
+@extends('layouts.entrepreneur')
+
+@section('title', 'Pitch Treinador · Startup Journey')
+
+@section('content')
+<div class="page-head"><div><div class="eyebrow">Practice with context</div><h1>Pitch Treinador</h1><p>Treine seu pitch com perguntas baseadas nas lacunas reais da sua startup.</p></div><div class="actions"><button class="btn">Configurar sessão</button><button class="btn primary">Encerrar e salvar</button></div></div>
+<div class="tabs"><div class="tab active">Demo Day · 5 min</div><div class="tab">Investidor</div><div class="tab">Cliente</div></div>
+<div class="pitch-coach-grid"><div><div class="camera"><div class="timer">03:42 / 05:00</div><div>Camera preview</div></div><div class="card section tint"><div class="metric-label">Pergunta do avaliador</div><h2>“Você afirma que o cliente economiza dinheiro. Como chegou a esse valor?”</h2><div class="card" style="margin-top:12px"><div class="metric-label">Sugestão do treinador</div><p>Use a evidência da entrevista #12 e deixe claro que o valor ainda é uma estimativa, não uma promessa.</p></div><div class="actions" style="margin-top:12px"><button class="btn primary">Responder por voz</button><button class="btn">Próxima pergunta</button></div></div></div>
+<aside><div class="card"><div class="section-head"><h2>Pitch Maturidade</h2><strong style="font-size:28px;color:var(--primary)">76</strong></div><div class="list"><div class="list-item"><span>Clareza</span><strong>88%</strong></div><div class="list-item"><span>Evidência</span><strong>82%</strong></div><div class="list-item"><span>Preço</span><strong style="color:var(--danger)">58%</strong></div><div class="list-item"><span>Narrativa</span><strong>84%</strong></div></div></div><div class="card danger section"><h2>Objeções críticas</h2><div class="list"><div class="list-item"><div><div class="item-title">Preço ainda não comprovado</div><div class="item-meta">Use como hipótese, não como certeza.</div></div></div><div class="list-item"><div><div class="item-title">Integrações</div><div class="item-meta">Explique como será testado sem prometer cobertura total.</div></div></div></div></div></aside></div>
+@endsection
